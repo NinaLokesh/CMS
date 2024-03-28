@@ -12,12 +12,17 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Service
-@AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService{
 
 	@Autowired
 	private UserRepository userRepo;
 	
+	public CustomUserDetailsService(UserRepository userRepo) {
+		super();
+		this.userRepo = userRepo;
+	}
+
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		

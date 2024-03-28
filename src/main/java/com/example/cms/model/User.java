@@ -28,19 +28,20 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
-	@NotNull(message = "Enter UserName")
+	//@NotNull(message = "Enter UserName")
 	private String userName;
-	@Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", message="Email ID not valid")
+	//@Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", message="Email ID not valid")
 	private String email;
-	@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$", message="Password not strong enough")
+	//@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$", message="Password not strong enough")
 	private String password;
 	
 	@CreatedDate
 	@Column(updatable = false)
 	private LocalDateTime createdAt;
-	
 	@LastModifiedDate
 	private LocalDateTime lastModifiedAt;
+	
+	private boolean deleted;
 	
 
 	

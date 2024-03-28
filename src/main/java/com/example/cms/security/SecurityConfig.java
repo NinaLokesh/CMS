@@ -16,11 +16,15 @@ import lombok.NoArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class SecurityConfig {
 	
 	private CustomUserDetailsService userDetailsService;
 	
+	public SecurityConfig(CustomUserDetailsService userDetailsService) {
+		super();
+		this.userDetailsService = userDetailsService;
+	}
+
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(12);

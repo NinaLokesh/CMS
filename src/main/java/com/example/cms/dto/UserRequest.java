@@ -3,14 +3,16 @@ package com.example.cms.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 
 public class UserRequest {
-	
-	@NotNull(message = "Enter UserName")
+
+	//@NotNull(message = "Enter UserName")
 	private String userName;
-	@Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", message="Email ID not valid")
+	//@Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", message="Email ID not valid")
 	private String email;
-	@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$", message="Password not strong enough")
+	//@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$", message="Password not strong enough")
 	private String password;
 	
 	public String getUserName() {
@@ -31,4 +33,10 @@ public class UserRequest {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	
+//	private int userId;
+//	private String userName;
+//	private String email;
+//	private String password;
 }

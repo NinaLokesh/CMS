@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.cms.dto.UserRequest;
 import com.example.cms.dto.UserResponse;
 import com.example.cms.exception.UserAlreadyExistsByEmailException;
+import com.example.cms.exception.UserNotFoundByIdException;
 import com.example.cms.model.User;
 import com.example.cms.repository.UserRepository;
 import com.example.cms.service.UserService;
@@ -17,12 +18,20 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Service
-@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
 	private UserRepository userRepo;
 	private ResponseStructure<UserResponse> structure;
 	private PasswordEncoder passwordEncoder;
+	
+	public UserServiceImpl(UserRepository userRepo, ResponseStructure<UserResponse> structure,
+			PasswordEncoder passwordEncoder) {
+		super();
+		this.userRepo = userRepo;
+		this.structure = structure;
+		this.passwordEncoder = passwordEncoder;
+	}
+
 
 	//	@Override
 	//	public ResponseEntity<ResponseStructure<User>> registerUser(UserRequest userRequest) {
@@ -48,7 +57,7 @@ public class UserServiceImpl implements UserService {
 		if(userRepo.existsByEmail(userRequest.getEmail()))
 			throw new UserAlreadyExistsByEmailException("Failed to register user");
 
-		User user = userRepo.save(mapToUserEntity(userRequest, new User()));
+		User user = userRepo.save(mapToUserRequest(userRequest, new User()));
 		
 		return ResponseEntity.ok(structure.setStatusCode(HttpStatus.OK.value())
 				.setMessage("User registered successfully")
@@ -69,7 +78,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
-	private User mapToUserEntity(UserRequest userRequest, User user) {
+	private User mapToUserRequest(UserRequest userRequest, User user) {
 
 		user.setUserName(userRequest.getUserName());
 		user.setEmail(userRequest.getEmail());
@@ -77,6 +86,35 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 		return user;
 	}
+
+
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> findUserById(int userId) {
+	
+		return userRepo.findById(userId).map(user -> {
+			if(!user.isDeleted())
+				return ResponseEntity.ok(structure.setMessage("User found")
+						.setStatusCode(HttpStatus.OK.value())
+						.setData(mapToUserResponse(user))
+						);
+			throw new UserAlreadyExistsByEmailException("User ID already deleted");
+		}).orElseThrow(()-> new UserNotFoundByIdException("User ID not found"));
+	}
+	
+
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> deleteUserById(int userId) {
+		
+		return userRepo.findById(userId).map(user -> {
+			user.setDeleted(true);
+			userRepo.save(user);
+			return ResponseEntity.ok(structure.setMessage("User deleted")
+					.setStatusCode(HttpStatus.OK.value())
+					.setData(mapToUserResponse(user))
+					);
+		}).orElseThrow(()-> new UserNotFoundByIdException("User ID not found"));
+	}
+
 }
 
 
